@@ -1,5 +1,5 @@
 package com.pluralsight;
-
+import com.pluralsight.BookDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -30,7 +30,7 @@ public class ControllerServlet extends HttpServlet {
 
     public void init() {
 			dbConnection = new DBConnection();
-			bookDAO = new BookDAO(dbConnection.getConnection());
+			BookDAO = new BookDAO(dbConnection.getConnection());
     }
 
 		public void destroy() {
@@ -58,6 +58,9 @@ public class ControllerServlet extends HttpServlet {
           break;
 				case "/insert":
 					insertBook(request, response);
+          break;
+				case "/delete":
+					deleteBook(request, response);
           break;
         default:
 				   listBooks(request, response);
@@ -101,8 +104,15 @@ public class ControllerServlet extends HttpServlet {
 
 		Book newBook = new Book(title, author, Float.parseFloat(priceString));
 
-		bookDAO.insertBook(newBook);
+		BookDAO.insertBook(newBook);
 		response.sendRedirect("list");
+	}
+	private void deleteBook(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
+		BookDAO.deleteBook(id);
+		response.sendRedirect("list");
+		
 	}
 
 	/**
